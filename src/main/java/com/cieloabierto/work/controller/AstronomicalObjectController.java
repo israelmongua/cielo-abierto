@@ -25,8 +25,7 @@ public class AstronomicalObjectController {
     @GetMapping("/{id}")
     public ResponseEntity<AstronomicalObject> getAstronomicalObjectById(@PathVariable Long id) {
         return astronomicalObjectRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
