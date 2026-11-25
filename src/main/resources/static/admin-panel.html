@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consola Administrativa · Cielo Abierto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/cielo_abierto1.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        footer {
+            margin-top: auto;
+        }
+        .admin-main {
+            padding-top: 130px;
+            padding-bottom: 60px;
+        }
+        .panel-cristal {
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            border-radius: 16px;
+            box-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
+        }
+        .lock-box {
+            max-width: 480px;
+            margin: 40px auto;
+        }
+        .form-control-cosmos, .form-select-cosmos {
+            background: rgba(5, 8, 17, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: var(--texto-blanco);
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+        .form-control-cosmos:focus, .form-select-cosmos:focus {
+            background: rgba(5, 8, 17, 0.95);
+            border-color: var(--color-primario);
+            color: var(--texto-blanco);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.22);
+            outline: none;
+        }
+        .form-control-cosmos[readonly] {
+            background: rgba(15, 23, 42, 0.65);
+            color: var(--texto-secundario);
+            cursor: not-allowed;
+        }
+        .form-select-cosmos option {
+            background-color: #0F172A;
+            color: #FFFFFF;
+        }
+        .stat-card {
+            background: rgba(5, 8, 17, 0.55);
+            border: 1px solid rgba(56, 189, 248, 0.16);
+            border-radius: 14px;
+            padding: 20px;
+            height: 100%;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+        .stat-card-highlight {
+            background: linear-gradient(145deg, rgba(14, 116, 144, 0.25), rgba(5, 8, 17, 0.75));
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        .stat-num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--color-primario);
+            line-height: 1.15;
+        }
+        .stat-num-emerald {
+            color: #34d399;
+        }
+        .svg-donut-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            min-height: 170px;
+        }
+        .svg-donut {
+            width: 148px;
+            height: 148px;
+            transform: rotate(-90deg);
+            flex-shrink: 0;
+        }
+        .dot-astro {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #38bdf8;
+        }
+        .dot-div {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #818cf8;
+        }
+        .ranking-item {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.14);
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+        .progress-cosmos {
+            height: 6px;
+            background-color: rgba(56, 189, 248, 0.12);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .progress-cosmos .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            transition: width 0.3s ease;
+        }
+        .nav-tabs-cosmos .nav-link {
+            color: var(--texto-secundario);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 10px 18px;
+        }
+        .nav-tabs-cosmos .nav-link.active {
+            color: #050811;
+            background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+            border-color: transparent;
+        }
+        .tabla-cosmos {
+            color: var(--texto-blanco);
+            --bs-table-bg: transparent;
+            --bs-table-color: var(--texto-blanco);
+            --bs-table-border-color: rgba(56, 189, 248, 0.14);
+        }
+        .tabla-cosmos th {
+            color: var(--color-primario);
+            font-family: monospace;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+        }
+        .toast-flotante {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1080;
+            max-width: 440px;
+            width: calc(100% - 48px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="cielo"></canvas>
+    <div class="velo"></div>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a href="index.html"><img src="images/cielo_abierto4.svg" alt="Cielo Abierto"></a>
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                <li class="nav-item"><a class="nav-link link-up" href="admin-panel.html">Administración</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="/events_base.html">Eventos</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="membership.html">Miembros</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="/astronomical_base.html">Cuerpos Celestes</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="who_we_are.html">¿Quienes Somos?</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- CONTENEDOR FLOTANTE DE AVISOS SIEMPRE VISIBLE -->
+    <div id="adminFeedback" class="toast-flotante"></div>
+
+    <main class="admin-main container">
+
+        <!-- PANTALLA DE BLOQUEO POR CONTRASEÑA SECRETA (SIMULACIÓN) -->
+        <section id="bloqueoSection" class="panel-cristal p-4 p-md-5 lock-box text-center">
+            <span class="badge-astro mb-3">Acceso Restringido</span>
+            <h1 class="h2 fw-bold text-white mb-2">Panel Administrativo</h1>
+            <p class="text-secondary small mb-4">
+                Ingresa la contraseña del sistema para desbloquear el panel de estadísticas y el completo a los datos.
+            </p>
+            <form id="unlockForm" class="text-start">
+                <div class="mb-3">
+                    <label for="secretPassword" class="form-label text-secondary small">Contraseña Secreta Única</label>
+                    <input type="password" id="secretPassword" class="form-control-cosmos w-100" required>
+                </div>
+                <button type="submit" class="btn btn-cian-cosmos w-100 py-3 fw-bold">
+                    Desbloquear Panel Administrativo &rarr;
+                </button>
+            </form>
+        </section>
+
+        <!-- PANEL ADMINISTRATIVO DESBLOQUEADO -->
+        <div id="adminContent" style="display: none;">
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <span class="badge-astro mb-2">✦ Control General</span>
+                    <h1 class="h2 fw-bold text-white mb-0">Panel Administrativo · Cielo Abierto</h1>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-borde-cosmos px-3 py-2 small fw-semibold" onclick="cargarTodo()">
+                        ↻ Actualizar Datos
+                    </button>
+                    <button type="button" class="btn btn-outline-light px-3 py-2 small" onclick="bloquearPanel()">
+                        Bloquear
+                    </button>
+                </div>
+            </div>
+
+            <!-- APARTADO DE ESTADÍSTICAS DEL NEGOCIO (100% NATIVO) -->
+            <section class="panel-cristal p-4 p-md-5 mb-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                    <div>
+                        <span class="badge-telemetria mb-1">TELEMETRÍA & FINANZAS</span>
+                        <h2 class="h4 fw-bold text-white mb-0">Estadísticas en Tiempo Real</h2>
+                    </div>
+                    <span id="statsStatus" class="small font-monospace text-info">SINCRONIZADO</span>
+                </div>
+
+                <!-- FILA 1: TRACKING DE REGISTROS -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="tele-label">Eventos Registrados</div>
+                            <div id="statEvents" class="stat-num">0</div>
+                            <div id="statEventsBreakdown" class="text-secondary small font-monospace mt-1">0 Astr. · 0 Div.</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="tele-label">Objetos Astronómicos</div>
+                            <div id="statObjects" class="stat-num">0</div>
+                            <div id="statObjectsUsed" class="text-secondary small font-monospace mt-1">0 usados en eventos</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="tele-label">Membresías Registradas</div>
+                            <div id="statMemberships" class="stat-num">0</div>
+                            <div id="statMembershipsActive" class="text-secondary small font-monospace mt-1">0 vigentes hoy</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="tele-label">Asistencias & Cupos</div>
+                            <div id="statAttendancesCount" class="stat-num">0</div>
+                            <div id="statSpotsBreakdown" class="text-secondary small font-monospace mt-1">0 cupos · 0 canceladas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILA 2: ESTADÍSTICAS ECONÓMICAS -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card stat-card-highlight">
+                            <div class="tele-label">Ingresos Totales Consolidados</div>
+                            <div id="statTotalRevenue" class="stat-num stat-num-emerald">$0 COP</div>
+                            <div id="statAvgTicket" class="text-secondary small font-monospace mt-1">Ticket promedio evento: $0 COP</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="tele-label">Recaudado en Eventos</div>
+                            <div id="statEventRevenue" class="stat-num">$0 COP</div>
+                            <div id="statEventRevenueSplit" class="text-secondary small font-monospace mt-1">Miembros: $0 · Invitados: $0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between align-items-center gap-2">
+                                <div class="tele-label mb-0">Recaudado en Membresías</div>
+                                <span class="badge-telemetria">$30.000 / mes</span>
+                            </div>
+                            <div id="statMembershipRevenue" class="stat-num mt-1">$0 COP</div>
+                            <div id="statMembershipRevenueNote" class="text-secondary small font-monospace mt-1">0 membresías × $30.000/mes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FILA 3: GRÁFICA SVG + EVENTO MÁS EXITOSO + OBJETOS MÁS USADOS -->
+                <div class="row g-3">
+                    <!-- Gráfica Astronómicos vs Divulgativos (SVG puro) -->
+                    <div class="col-lg-4">
+                        <div class="stat-card d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="tele-label mb-2">Astronómicos vs. Divulgativos</div>
+                                <div class="svg-donut-box">
+                                    <svg class="svg-donut" viewBox="0 0 120 120" aria-label="Gráfica Astronómicos vs Divulgativos">
+                                        <circle cx="60" cy="60" r="46" fill="none" stroke="rgba(56, 189, 248, 0.14)" stroke-width="14"></circle>
+                                        <circle id="svgAstroArc" cx="60" cy="60" r="46" fill="none" stroke="#38bdf8" stroke-width="14" stroke-dasharray="0 289.03" stroke-dashoffset="0"></circle>
+                                        <circle id="svgDivArc" cx="60" cy="60" r="46" fill="none" stroke="#818cf8" stroke-width="14" stroke-dasharray="0 289.03" stroke-dashoffset="0"></circle>
+                                    </svg>
+                                    <div class="small font-monospace d-flex flex-column gap-2">
+                                        <div>
+                                            <span class="dot-astro me-1"></span>
+                                            <strong class="text-white">Astr.</strong>
+                                            <div id="legendAstroText" class="text-info">0 (0%)</div>
+                                        </div>
+                                        <div>
+                                            <span class="dot-div me-1"></span>
+                                            <strong class="text-white">Div.</strong>
+                                            <div id="legendDivText" style="color: #a5b4fc;">0 (0%)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="chartSummaryText" class="text-center text-secondary small font-monospace mt-2">
+                                Sin eventos registrados
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Evento más exitoso -->
+                    <div class="col-lg-4">
+                        <div class="stat-card d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="tele-label mb-2">★ Evento Más Exitoso</div>
+                                <div id="topEventContainer">
+                                    <p class="text-secondary small mb-0">Aún no hay asistencias confirmadas.</p>
+                                </div>
+                            </div>
+                            <div class="text-secondary small font-monospace mt-3 pt-2 border-top border-secondary border-opacity-25">
+                                Criterio: mayor cantidad de cupos confirmados
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Objetos astronómicos más usados -->
+                    <div class="col-lg-4">
+                        <div class="stat-card">
+                            <div class="tele-label mb-2">🔭 Objetos Más Usados en Eventos</div>
+                            <div id="topObjectsContainer" class="d-flex flex-column gap-2">
+                                <p class="text-secondary small mb-0">Sin objetos asociados a eventos todavía.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- APARTADO CRUD COMPLETO -->
+            <section class="panel-cristal p-4 p-md-5">
+                <span class="badge-telemetria mb-2">ADMINISTRACIÓN DE DATOS</span>
+                <h2 class="h4 fw-bold text-white mb-4">CRUD Completo del Sistema</h2>
+
+                <ul class="nav nav-tabs nav-tabs-cosmos gap-2 mb-4 border-0" id="crudTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-events" type="button" role="tab">Eventos</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-objects" type="button" role="tab">Objetos Astronómicos</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-memberships" type="button" role="tab">Membresías</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-attendances" type="button" role="tab">Asistencias</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- 1. CRUD EVENTOS -->
+                    <div class="tab-pane fade show active" id="tab-events" role="tabpanel">
+                        <form id="eventForm" novalidate class="row g-3 mb-4 p-3 rounded-3" style="background: rgba(5,8,17,0.45);">
+                            <input type="hidden" id="evId">
+                            <div class="col-md-5">
+                                <label class="form-label text-secondary small">Título *</label>
+                                <input type="text" id="evTitle" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-secondary small">Tipo *</label>
+                                <select id="evType" class="form-select-cosmos w-100" onchange="syncEventObjectRequirement()">
+                                    <option value="ASTRONOMICAL">ASTRONOMICAL</option>
+                                    <option value="DIVULGATIVE">DIVULGATIVE</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-secondary small">Creador ID *</label>
+                                <input type="number" id="evCreatorId" class="form-control-cosmos w-100" min="1">
+                            </div>
+                            <div class="col-md-2">
+                                <label id="evObjectLabel" class="form-label text-secondary small">Objeto ID *</label>
+                                <input type="number" id="evObjectId" class="form-control-cosmos w-100" min="1" placeholder="Requerido">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Ubicación *</label>
+                                <input type="text" id="evLocation" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Precio Ticket *</label>
+                                <input type="number" id="evPrice" class="form-control-cosmos w-100" value="0" min="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Cupo Máximo *</label>
+                                <input type="number" id="evCapacity" class="form-control-cosmos w-100" min="1">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Fecha Inicio *</label>
+                                <input type="datetime-local" id="evStart" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Fecha Fin *</label>
+                                <input type="datetime-local" id="evEnd" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Imagen (URL / ruta)</label>
+                                <input type="text" id="evImage" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label text-secondary small">Descripción</label>
+                                <input type="text" id="evDesc" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-12 d-flex gap-2">
+                                <button type="submit" class="btn btn-cian-cosmos px-4 py-2 fw-bold">Guardar Evento</button>
+                                <button type="button" class="btn btn-borde-cosmos px-3 py-2" onclick="resetEventForm()">Limpiar</button>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table class="table tabla-cosmos align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Título</th>
+                                        <th>Tipo</th>
+                                        <th>Precio</th>
+                                        <th>Cupo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="eventsTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 2. CRUD OBJETOS ASTRONÓMICOS -->
+                    <div class="tab-pane fade" id="tab-objects" role="tabpanel">
+                        <form id="objectForm" novalidate class="row g-3 mb-4 p-3 rounded-3" style="background: rgba(5,8,17,0.45);">
+                            <input type="hidden" id="objId">
+                            <div class="col-md-3">
+                                <label class="form-label text-secondary small">Código *</label>
+                                <input type="text" id="objCode" class="form-control-cosmos w-100" placeholder="Ej. PLN-009">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Nombre *</label>
+                                <input type="text" id="objName" class="form-control-cosmos w-100" placeholder="Ej. Ceres">
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label text-secondary small">Ubicación</label>
+                                <input type="text" id="objLocation" class="form-control-cosmos w-100" placeholder="Ej. Cinturón de Asteroides">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary small">Imagen (URL / ruta)</label>
+                                <input type="text" id="objImage" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-secondary small">Descripción</label>
+                                <input type="text" id="objDesc" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-12 d-flex gap-2">
+                                <button type="submit" class="btn btn-cian-cosmos px-4 py-2 fw-bold">Guardar Objeto</button>
+                                <button type="button" class="btn btn-borde-cosmos px-3 py-2" onclick="resetObjectForm()">Limpiar</button>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table class="table tabla-cosmos align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Nombre</th>
+                                        <th>Ubicación</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="objectsTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 3. CRUD MEMBRESÍAS -->
+                    <div class="tab-pane fade" id="tab-memberships" role="tabpanel">
+                        <form id="membershipForm" novalidate class="row g-3 mb-4 p-3 rounded-3" style="background: rgba(5,8,17,0.45);">
+                            <input type="hidden" id="memId">
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Nombre *</label>
+                                <input type="text" id="memName" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Documento *</label>
+                                <input type="text" id="memIdCard" class="form-control-cosmos w-100" placeholder="Solo números positivos">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Correo *</label>
+                                <input type="email" id="memEmail" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-secondary small">Contraseña *</label>
+                                <input type="password" id="memPassword" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-secondary small">Descuento (%)</label>
+                                <input type="number" id="memDiscount" class="form-control-cosmos w-100" value="10" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-secondary small">Nacimiento *</label>
+                                <input type="date" id="memBirth" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-secondary small">Inicio *</label>
+                                <input type="datetime-local" id="memStart" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-secondary small">Fin *</label>
+                                <input type="datetime-local" id="memEnd" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-12 d-flex gap-2">
+                                <button type="submit" class="btn btn-cian-cosmos px-4 py-2 fw-bold">Guardar Membresía</button>
+                                <button type="button" class="btn btn-borde-cosmos px-3 py-2" onclick="resetMembershipForm()">Limpiar</button>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table class="table tabla-cosmos align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Nombre</th>
+                                        <th>Correo</th>
+                                        <th>Dto.</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="membershipsTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 4. CRUD ASISTENCIAS -->
+                    <div class="tab-pane fade" id="tab-attendances" role="tabpanel">
+                        <form id="attendanceForm" novalidate class="row g-3 mb-4 p-3 rounded-3" style="background: rgba(5,8,17,0.45);">
+                            <input type="hidden" id="attId">
+                            <div class="col-md-2">
+                                <label class="form-label text-secondary small">Evento ID *</label>
+                                <input type="number" id="attEventId" class="form-control-cosmos w-100" min="1">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-secondary small">Membresía ID</label>
+                                <input type="number" id="attMembershipId" class="form-control-cosmos w-100" min="1" placeholder="Opcional" oninput="syncMemberAttendanceFields()">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Nombre Asistente *</label>
+                                <input type="text" id="attName" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Documento *</label>
+                                <input type="text" id="attIdCard" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small">Correo</label>
+                                <input type="email" id="attEmail" class="form-control-cosmos w-100">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label text-secondary small">Cupos *</label>
+                                <input type="number" id="attPersons" class="form-control-cosmos w-100" value="1" min="1">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-secondary small">Precio ($) *</label>
+                                <input type="number" id="attPrice" class="form-control-cosmos w-100" value="0" min="0">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-secondary small">Estado</label>
+                                <select id="attStatus" class="form-select-cosmos w-100">
+                                    <option value="1">Confirmada (1)</option>
+                                    <option value="0">Cancelada (0)</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <small id="attMemberHint" class="text-info d-block"></small>
+                            </div>
+                            <div class="col-12 d-flex gap-2">
+                                <button type="submit" class="btn btn-cian-cosmos px-4 py-2 fw-bold">Guardar Asistencia</button>
+                                <button type="button" class="btn btn-borde-cosmos px-3 py-2" onclick="resetAttendanceForm()">Limpiar</button>
+                            </div>
+                        </form>
+
+                        <div class="table-responsive">
+                            <table class="table tabla-cosmos align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Código</th>
+                                        <th>Evento</th>
+                                        <th>Asistente</th>
+                                        <th>Cupos</th>
+                                        <th>Precio</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendancesTbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer-cosmos py-4 mt-5">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3 mono">
+            <span class="footer-marca">
+                <span class="footer-punto"></span> &copy; 2026 <strong>Cielo Abierto</strong>
+            </span>
+            <span class="footer-lema">Un tributo digital al firmamento.</span>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/starts_background.js"></script>
+    <script src="js/admin_panel.js"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartelera de Eventos · Cielo Abierto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/cielo_abierto1.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        footer {
+            margin-top: auto;
+        }
+        .events-hero {
+            padding-top: 140px;
+            padding-bottom: 50px;
+        }
+        .search-toolbar {
+            max-width: 780px;
+            margin: 2rem auto 0;
+        }
+        .search-input {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: var(--texto-blanco);
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: var(--color-primario);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+            color: var(--texto-blanco);
+            outline: none;
+        }
+        .publish-cta-banner {
+            max-width: 780px;
+            margin: 1.25rem auto 0;
+            padding: 14px 20px;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(56, 189, 248, 0.16);
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            text-align: left;
+        }
+        .event-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            position: relative;
+        }
+        .event-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(56, 189, 248, 0.05);
+        }
+        .event-card.astronomical::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-primario), var(--color-secundario));
+        }
+        .event-card.divulgative::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-secundario), #7DD3FC);
+        }
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #050811;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+        }
+        .type-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-family: monospace;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .astronomical .type-badge {
+            color: var(--color-primario);
+            background: rgba(56, 189, 248, 0.1);
+        }
+        .divulgative .type-badge {
+            color: #7DD3FC;
+            background: rgba(125, 211, 252, 0.1);
+        }
+        .empty-state {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.12);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            color: var(--texto-secundario);
+            font-family: monospace;
+        }
+        .modal-content-space {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--texto-blanco);
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fondo estrellado y velo global -->
+    <canvas id="cielo"></canvas>
+    <div class="velo"></div>
+
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a href="index.html"><img src="images/cielo_abierto4.svg" alt="Cielo Abierto"></a>
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                <li class="nav-item"><a class="nav-link link-up" href="admin-panel.html">Administración</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="/events_base.html">Eventos</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="membership.html">Miembros</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="/astronomical_base.html">Cuerpos Celestes</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="who_we_are.html">¿Quienes Somos?</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="events-hero container my-5">
+        <!-- Encabezado de la sección -->
+        <div class="text-center mb-5">
+            <span class="badge-astro mb-3">✦ Cartelera Cósmica</span>
+            <h1 class="fw-bold text-white display-5 mb-3" style="font-size: 3rem;">Próximos Eventos y Charlas</h1>
+            <p class="text-secondary mx-auto" style="max-width: 600px;">
+                Inscríbete en nuestras noches de observación astronómica y conferencias magistrales guiadas por rigor científico.
+            </p>
+            
+            <!-- Buscador en tiempo real -->
+            <div class="search-toolbar">
+                <div class="d-flex gap-2">
+                    <input type="text" id="searchInput" class="search-input w-100" placeholder="🔍 Buscar por título, ubicación, código o tipo de evento..." oninput="filterEvents()">
+                    <button type="button" id="clearSearchBtn" class="btn btn-borde-cosmos px-3" style="display: none;" onclick="clearSearch()" title="Limpiar búsqueda">✕</button>
+                </div>
+
+                <!-- Franja de acción para publicar eventos -->
+                <div class="publish-cta-banner">
+                    <div class="small text-secondary">
+                        <strong class="text-white d-block">¿Tienes una observación o charla por organizar?</strong>
+                        Publica tu actividad en la cartelera usando tu ID de membresía.
+                    </div>
+                    <a href="public_events.html" class="btn btn-cian-cosmos px-4 py-2 fw-bold">
+                        Publica Tus Propios Eventos &rarr;
+                    </a>
+                </div>
+                <!-- Franja de acción para consultar eventos -->
+                <div class="publish-cta-banner">
+                    <div class="small text-secondary">
+                        <strong class="text-white d-block">Consulta tus eventos</strong>
+                        Usando Tus Credenciales.
+                    </div>
+                    <a href="my_events.html" class="btn btn-cian-cosmos px-4 py-2 fw-bold">
+                        Consulta Tus Eventos &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid de Tarjetas Dinámicas -->
+        <div id="eventsGrid" class="row g-4">
+            <div class="col-12">
+                <div class="empty-state">Sincronizando cartelera de eventos...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Detalle e Inscripción -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modal-content-space p-2">
+                <div class="modal-header border-bottom border-secondary border-opacity-25">
+                    <h5 class="modal-title fw-bold text-white" id="modalTitle">Detalle del Evento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-6">
+                            <img id="modalImg" src="" alt="Evento astronómico" class="img-fluid rounded-3 w-100" style="max-height: 260px; object-fit: cover; border: 1px solid rgba(56,189,248,0.2);">
+                        </div>
+                        <div class="col-md-6">
+                            <span id="modalTypeBadge" class="type-badge mb-2"></span>
+                            <p id="modalDate" class="text-info small fw-bold mb-2"></p>
+                            <p id="modalLocation" class="text-secondary small mb-2">📍 <span id="modalLocationText"></span></p>
+                            <p id="modalCapacity" class="text-secondary small mb-3">👥 Capacidad máxima: <span id="modalCapacityText"></span> personas</p>
+                            <h4 id="modalPrice" class="text-white fw-bold mb-3"></h4>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <p id="modalDesc" class="text-secondary lh-base mb-0" style="font-size: 0.95rem;"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-secondary border-opacity-25 justify-content-between">
+                    <span class="small font-monospace text-secondary">CÓDIGO: <span id="modalCodeText"></span></span>
+                    <button type="button" class="btn btn-cian-cosmos px-4 py-2 fw-bold" onclick="goToRegistrationFromModal()">Inscribirme al Evento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-cosmos py-4 mt-5">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3 mono">
+            <span class="footer-marca">
+                <span class="footer-punto"></span> &copy; 2026 <strong>Cielo Abierto</strong>
+            </span>
+            <span class="footer-lema">Un tributo digital al firmamento.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/starts_background.js"></script>
+    <script src="js/event_base.js"></script>
+</body>
+</html>

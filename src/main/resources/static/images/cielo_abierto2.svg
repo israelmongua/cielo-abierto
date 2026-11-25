@@ -1,0 +1,9 @@
+<svg width="240" height="54" viewBox="0 0 240 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M10 27C10 17.6112 17.6112 10 27 10C36.3888 10 44 17.6112 44 27" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" />
+  <ellipse cx="27" cy="28" rx="20" ry="6.5" transform="rotate(-18 27 28)" stroke="#0F172A" stroke-width="1.6" stroke-opacity="0.6" />
+  <path d="M27 16L29.1 24.9L38 27L29.1 29.1L27 38L24.9 29.1L16 27L24.9 24.9L27 16Z" fill="#0F172A" />
+  <circle cx="39" cy="15" r="1.5" fill="#0F172A" />
+
+  <text x="58" y="26" fill="#0F172A" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="700" letter-spacing="0.5">CIELO</text>
+  <text x="58" y="42" fill="#334155" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" letter-spacing="2.8">ABIERTO</text>
+</svg>

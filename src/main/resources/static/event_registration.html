@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción a Evento · Cielo Abierto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/cielo_abierto1.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+        footer {
+            margin-top: auto;
+        }
+        .registration-hero {
+            padding-top: 140px;
+            padding-bottom: 50px;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+        }
+        .form-control-cosmos, .form-select-cosmos {
+            background: rgba(5, 8, 17, 0.72);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: var(--texto-blanco);
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+        .form-control-cosmos:focus, .form-select-cosmos:focus {
+            background: rgba(5, 8, 17, 0.92);
+            border-color: var(--color-primario);
+            color: var(--texto-blanco);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.22);
+            outline: none;
+        }
+        .form-control-cosmos[readonly] {
+            background: rgba(15, 23, 42, 0.65);
+            color: var(--texto-secundario);
+            cursor: not-allowed;
+        }
+        .event-preview-card {
+            background: rgba(5, 8, 17, 0.55);
+            border: 1px solid rgba(56, 189, 248, 0.22);
+            border-radius: 12px;
+            padding: 16px 20px;
+        }
+        .payment-summary-box {
+            background: rgba(5, 8, 17, 0.65);
+            border: 1px solid rgba(56, 189, 248, 0.24);
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .payment-progress-track {
+            height: 12px;
+            background: rgba(56, 189, 248, 0.14);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .payment-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--color-primario), #34d399);
+            transition: width 0.12s linear;
+        }
+        .mode-btn {
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="cielo"></canvas>
+    <div class="velo"></div>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a href="index.html"><img src="images/cielo_abierto4.svg" alt="Cielo Abierto"></a>
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                <li class="nav-item"><a class="nav-link link-up" href="admin-panel.html">Administración</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="/events_base.html">Eventos</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="membership.html">Miembros</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="/astronomical_base.html">Cuerpos Celestes</a></li>
+                <li class="nav-item"><a class="nav-link link-up" href="who_we_are.html">¿Quienes Somos?</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="registration-hero container my-4">
+        <div class="text-center mb-5">
+            <span class="badge-astro mb-3">✦ Reserva de Cupos</span>
+            <h1 class="fw-bold text-white display-5 mb-3" style="font-size: 3rem;">Inscripción a Evento</h1>
+            <p class="text-secondary mx-auto" style="max-width: 680px;">
+                Ingresa el código del evento, selecciona si cuentas con membresía o no y completa el pago para confirmar tu asistencia.
+            </p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="glass-panel p-4 p-md-5">
+                    <form id="registrationForm" novalidate class="row g-4">
+
+                        <!-- 1. Código del evento -->
+                        <div class="col-12">
+                            <span class="badge-telemetria mb-2">PASO 1 · EVENTO</span>
+                            <label for="eventCodeInput" class="form-label text-secondary small d-block">Código del Evento *</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <input type="text" id="eventCodeInput" class="form-control-cosmos flex-grow-1" required placeholder="Ej. 482910" oninput="lookupEventByCode()">
+                                <button type="button" class="btn btn-borde-cosmos px-4" onclick="lookupEventByCode()">Buscar Evento</button>
+                            </div>
+                            <div id="eventPreviewBox" class="event-preview-card mt-3" style="display: none;"></div>
+                            <div id="eventLookupMessage" class="mt-2"></div>
+                        </div>
+
+                        <!-- 2. Tipo de asistente -->
+                        <div class="col-12">
+                            <span class="badge-telemetria mb-2">PASO 2 · TIPO DE ASISTENTE</span>
+                            <div class="d-flex flex-wrap gap-3 mt-1">
+                                <button type="button" id="nonMemberBtn" class="btn btn-cian-cosmos mode-btn" onclick="setAttendeeType('non-member')">
+                                    Asistente sin Membresía
+                                </button>
+                                <button type="button" id="memberBtn" class="btn btn-borde-cosmos mode-btn" onclick="setAttendeeType('member')">
+                                    Soy Miembro de Cielo Abierto
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Credenciales de miembro -->
+                        <div id="memberCredentialsBlock" class="col-12" style="display: none;">
+                            <div class="event-preview-card">
+                                <h2 class="h6 text-white fw-bold mb-3">Verificación de Credenciales de Miembro</h2>
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-5">
+                                        <label for="memberIdentifierInput" class="form-label text-secondary small">Correo o Documento *</label>
+                                        <input type="text" id="memberIdentifierInput" class="form-control-cosmos w-100" placeholder="Ej. 1037611222 o correo@cieloabierto.co">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="memberPasswordInput" class="form-label text-secondary small">Contraseña *</label>
+                                        <input type="password" id="memberPasswordInput" class="form-control-cosmos w-100" placeholder="••••••••">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" id="verifyMemberBtn" class="btn btn-borde-cosmos w-100 py-2 fw-semibold" onclick="verifyMember()">
+                                            Verificar Datos
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="memberAuthMessage" class="mt-3"></div>
+                            </div>
+                        </div>
+
+                        <!-- Datos de la inscripción -->
+                        <div class="col-12">
+                            <span class="badge-telemetria mb-2">PASO 3 · DATOS DE INSCRIPCIÓN</span>
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-6">
+                                    <label for="attendeeNameInput" class="form-label text-secondary small">Nombre Completo *</label>
+                                    <input type="text" id="attendeeNameInput" class="form-control-cosmos w-100" required placeholder="Nombre del asistente">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="attendeeDocumentInput" class="form-label text-secondary small">Documento de Identidad *</label>
+                                    <input type="text" id="attendeeDocumentInput" class="form-control-cosmos w-100" required placeholder="Número de documento">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="attendeeEmailInput" class="form-label text-secondary small">Correo Electrónico</label>
+                                    <input type="email" id="attendeeEmailInput" class="form-control-cosmos w-100" placeholder="Opcional">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="attendeeBirthDateInput" class="form-label text-secondary small">Fecha de Nacimiento</label>
+                                    <input type="date" id="attendeeBirthDateInput" class="form-control-cosmos w-100">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="ticketQuantityInput" class="form-label text-secondary small">Cantidad de Cupos *</label>
+                                    <input type="number" id="ticketQuantityInput" class="form-control-cosmos w-100" min="1" value="1" required oninput="updatePricingSummary()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Resumen y simulación de pago -->
+                        <div class="col-12">
+                            <span class="badge-telemetria mb-2">PASO 4 · RESUMEN Y PAGO</span>
+                            <div class="payment-summary-box mt-1">
+                                <div class="row g-2 small font-monospace mb-3">
+                                    <div class="col-sm-6 text-secondary">
+                                        Precio por ticket: <strong id="summaryUnitPrice" class="text-white">$0 COP</strong>
+                                    </div>
+                                    <div class="col-sm-6 text-secondary">
+                                        Descuento aplicado: <strong id="summaryDiscount" class="text-info">0%</strong>
+                                    </div>
+                                    <div class="col-sm-6 text-secondary">
+                                        Cantidad de cupos: <strong id="summaryQuantity" class="text-white">1</strong>
+                                    </div>
+                                    <div class="col-sm-6 text-secondary">
+                                        Total a pagar: <strong id="summaryTotalPrice" class="text-white fs-6">$0 COP</strong>
+                                    </div>
+                                </div>
+
+                                <div id="paymentSimulationArea" class="mb-3" style="display: none;">
+                                    <div class="d-flex justify-content-between small font-monospace mb-1">
+                                        <span id="paymentStatusLabel" class="text-info">Procesando pago...</span>
+                                        <span id="paymentPercentLabel" class="text-white">0%</span>
+                                    </div>
+                                    <div class="payment-progress-track">
+                                        <div id="paymentProgressBar" class="payment-progress-fill"></div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-wrap gap-3">
+                                    <button type="button" id="payButton" class="btn btn-cian-cosmos px-4 py-3 fw-bold flex-grow-1" onclick="simulatePaymentAndRegister()">
+                                        Pagar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div id="registrationFeedback" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-cosmos py-4 mt-5">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3 mono">
+            <span class="footer-marca">
+                <span class="footer-punto"></span> &copy; 2026 <strong>Cielo Abierto</strong>
+            </span>
+            <span class="footer-lema">Un tributo digital al firmamento.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/starts_background.js"></script>
+    <script src="js/event_registration.js"></script>
+</body>
+</html>

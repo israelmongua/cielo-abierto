@@ -1,0 +1,485 @@
+/*COLORES*/
+:root {
+    /* Colores de marca (del logo) */
+    --color-primario: rgb(58, 191, 248);
+    --color-secundario: rgb(129, 140, 248);
+    --color-brillo: rgb(125, 211, 252);
+    --color-osculo: #181818;
+
+    /* Fondos y superficies */
+    --fondo-espacio: #050811;
+    --fondo-tarjeta: #0F172A;
+
+    /* Textos y bordes */
+    --texto-blanco: #FFFFFF;
+    --color-borde: rgb(51, 65, 85);
+}
+
+h1{
+    font-size: 130px;
+    font-family: 'Space Grotesk';
+    font-weight: bolder;
+}
+
+/*FONDO ESTRELLADO*/
+/* Reseteo básico para quitar márgenes blancos del navegador */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #050811; /* Azul espacial muy oscuro */
+    color: #ffffff;
+    font-family: sans-serif;
+    min-height: 100vh;
+}
+
+/* Capa 1: El lienzo de las estrellas */
+#cielo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Se envía bien al fondo */
+}
+
+/* Capa 2: El velo (degradado sutil para que las estrellas no encandilen) */
+.velo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Encima de las estrellas, pero debajo del texto */
+    background: radial-gradient(circle at center, transparent 0%, rgba(5, 8, 17, 0.85) 100%);
+    pointer-events: none; /* Permite hacer clic a través de esta capa */
+}
+
+/* Capa 3: Tu contenido principal */
+.contenido {
+    position: relative;
+    z-index: 1;
+    padding: 50px;
+    text-align: center;
+    margin: 0px;
+}
+
+/* OPCIONES DE LA BARRA DE NAVEGACION*/
+.link-up{
+    color: white;
+}
+/* Barra de navegación*/
+nav{
+    background-color: rgb(24, 24, 24);
+}
+
+/* AGUJERO NEGRO */
+.agujero { 
+    display: block; 
+    width: min(80vw, 80vh, 800px); 
+    aspect-ratio: 1; }
+
+/*TELEMETRIA*/
+
+/* Contenedor principal de la telemetría */
+.telemetria-wrapper {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin: 0px;
+}
+
+/* Badge superior */
+.badge-telemetria {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: var(--color-primario);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 3px 6px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+/* Cajas individuales de datos */
+.tele-item {
+    background: rgba(5, 8, 17, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tele-label {
+    font-size: 0.75rem;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.tele-valor {
+    font-family: monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--texto-blanco);
+}
+
+/* --- SECCIÓN MODOS DE OBSERVACIÓN --- */
+.seccion-modos {
+    position: relative;
+    z-index: 1;
+}
+
+/* Tarjeta base con efecto Cristal (Glassmorphism) */
+.card-modo {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Efecto hover: sutil elevación y brillo cian */
+.card-modo:hover {
+    transform: translateY(-6px);
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(56, 189, 248, 0.05);
+}
+
+/* Acento superior diferenciador para la tarjeta principal (Astronómicos) */
+.card-astronomico::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primario), var(--color-secundario));
+}
+
+/* Acento superior para la tarjeta divulgativa */
+.card-divulgativo::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-secundario), #7DD3FC);
+}
+
+/* Iconos de cabecera de tarjeta */
+.icono-modo {
+    font-size: 2.2rem;
+    display: inline-block;
+    padding: 10px;
+    background: rgba(56, 189, 248, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(56, 189, 248, 0.12);
+}
+
+/* Lista personalizada (reemplaza los puntos negros aburridos por acentos estelares) */
+.lista-estelar {
+    list-style: none;
+    padding-left: 0;
+}
+
+.lista-estelar li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 10px;
+    color: var(--texto-secundario);
+    font-size: 0.95rem;
+}
+
+/* Creando un pequeño rombo/estrella luminosa como viñeta */
+.lista-estelar li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-primario);
+    font-size: 0.85rem;
+}
+
+/* --- ESTILOS: SECCIÓN DE DATOS DEL COSMOS --- */
+.card-dato {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.12);
+    border-radius: 12px;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-dato:hover {
+    transform: translateY(-4px);
+    border-color: rgba(56, 189, 248, 0.35);
+    background: rgba(15, 23, 42, 0.85);
+}
+
+.dato-numero {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-primario);
+    font-family: 'Space Grotesk', sans-serif;
+    margin-bottom: 6px;
+}
+
+.dato-etiqueta {
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- SECCIÓN HITOS / LÍNEA DE TIEMPO --- */
+.timeline-cosmos {
+    position: relative;
+    padding-left: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Línea vertical con degradado de marca */
+.timeline-cosmos::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--color-primario), var(--color-secundario), rgba(56, 189, 248, 0.1));
+}
+
+/* Tarjeta individual de cada hito */
+.hito-item {
+    position: relative;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.12);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+
+/* Nodo circular sobre la línea de tiempo */
+.hito-item::before {
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 24px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--fondo-espacio);
+    border: 2px solid var(--color-primario);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Interacción al pasar el cursor */
+.hito-item:hover {
+    transform: translateX(6px);
+    border-color: rgba(56, 189, 248, 0.4);
+    background: rgba(15, 23, 42, 0.9);
+}
+
+.hito-item:hover::before {
+    background-color: var(--color-primario);
+    transform: scale(1.25);
+}
+
+/* Estilo del año */
+.hito-anio {
+    display: inline-block;
+    width: fit-content;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-primario);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.hito-texto {
+    color: var(--texto-claro, #E2E8F0);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* En pantallas medianas/grandes, alinea el año a la izquierda del texto */
+@media (min-width: 576px) {
+    .hito-item {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .hito-anio {
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+}
+
+
+
+
+
+
+
+/* --- PIE DE PÁGINA (FOOTER) --- */
+.footer-cosmos {
+    position: relative;
+    background: var(--color-osculo);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(56, 189, 248, 0.15);
+    font-size: 0.85rem;
+    color: var(--texto-secundario);
+    z-index: 1;
+}
+
+/* Línea superior sutil con degradado de marca */
+.footer-cosmos::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-primario), var(--color-secundario), transparent);
+    opacity: 0.6;
+}
+
+.footer-marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--texto-blanco);
+}
+
+.footer-punto {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+    box-shadow: 0 0 8px var(--color-primario);
+}
+
+.footer-lema {
+    color: var(--texto-secundario);
+    letter-spacing: 0.5px;
+}
+
+/* --- SECCIÓN MEMBRESÍA (CONSOLA CTA) --- */
+.seccion-membresia {
+    position: relative;
+    z-index: 1;
+}
+
+.consola-membresia {
+    position: relative;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.65));
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(56, 189, 248, 0.06);
+    overflow: hidden;
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.consola-membresia:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(56, 189, 248, 0.1);
+}
+
+/* Destello ambiental decorativo en la esquina superior derecha */
+.consola-membresia::after {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.2), transparent 70%);
+    pointer-events: none;
+}
+
+/* Botón principal con degradado Cian -> Índigo */
+.btn-cian-cosmos {
+    background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+    color: #050811 !important;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.btn-cian-cosmos:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5);
+    filter: brightness(1.08);
+}
+
+/* --- SECCIÓN SISTEMA SOLAR (VISOR ORBITAL) --- */
+.seccion-sistema {
+    position: relative;
+    z-index: 1;
+}
+
+.visor-orbital {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(56, 189, 248, 0.05);
+}
+
+.canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background: radial-gradient(circle at center, rgba(15, 23, 42, 0.9) 0%, #050811 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+#orbitas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Botón con borde luminoso Cian */
+.btn-borde-cosmos {
+    color: var(--color-primario);
+    background: rgba(56, 189, 248, 0.06);
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-borde-cosmos:hover {
+    color: #050811;
+    background: var(--color-primario);
+    border-color: var(--color-primario);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    transform: translateY(-2px);
+}

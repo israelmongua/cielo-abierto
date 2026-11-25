@@ -1,0 +1,18 @@
+<svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="isoEstrella" x1="12" y1="10" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+    <linearGradient id="isoOrbita" x1="6" y1="27" x2="48" y2="27" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.1" />
+      <stop offset="50%" stop-color="#7DD3FC" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#818CF8" stop-opacity="0.1" />
+    </linearGradient>
+  </defs>
+
+  <path d="M10 27C10 17.6112 17.6112 10 27 10C36.3888 10 44 17.6112 44 27" stroke="url(#isoEstrella)" stroke-width="2.2" stroke-linecap="round" />
+  <ellipse cx="27" cy="28" rx="20" ry="6.5" transform="rotate(-18 27 28)" stroke="url(#isoOrbita)" stroke-width="1.6" />
+  <path d="M27 16L29.1 24.9L38 27L29.1 29.1L27 38L24.9 29.1L16 27L24.9 24.9L27 16Z" fill="url(#isoEstrella)" />
+  <circle cx="39" cy="15" r="1.5" fill="#7DD3FC" />
+</svg>

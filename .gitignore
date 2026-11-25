@@ -1,0 +1,46 @@
+HELP.md
+
+# Compilación y dependencias de Maven / Java
+target/
+build/
+.mvn/timing.properties
+.mvn/extensions.xml
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# IDEs y editores
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+.springBeans
+.sts4-cache
+.apt_generated
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Credenciales locales y archivos sensibles
+src/main/resources/application.properties
+src/main/resources/application-local.properties
+src/main/resources/application-dev.properties
+.env
+*.env
+
+# Sistema operativo, logs y temporales
+*.log
+.DS_Store
+Thumbs.db
+*~
+*.tmp
+*.bak
