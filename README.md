@@ -1,7 +1,11 @@
 # Cielo Abierto
 
 Aplicación web full-stack para la gestión de eventos astronómicos, catálogo de objetos celestes, membresías e inscripciones con control de cupos y descuentos.
-![Diagrama Cielo Abierto|700](./cielo_abierto.svg)
+
+
+<img src="./cielo_abierto.svg" alt="Diagrama Cielo Abierto" width="700">
+
+
 ## Características principales
 
 * **Catálogo de Objetos Astronómicos (`/api/object`):** CRUD completo con validación de unicidad por código (`code`) y nombre (`name`).
