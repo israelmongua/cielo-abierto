@@ -1,6 +1,6 @@
 # Cielo Abierto
 
-Aplicación web full-stack para la gestión de eventos astronómicos, catálogo de objetos celestes, membresías e inscripciones con control de cupos y descuentos.
+Aplicación web para la gestión de eventos astronómicos, catálogo de objetos celestes, membresías e inscripciones con control de cupos y descuentos.
 
 
 <img src="./cielo_abierto.svg" alt="Diagrama Cielo Abierto" width="700">

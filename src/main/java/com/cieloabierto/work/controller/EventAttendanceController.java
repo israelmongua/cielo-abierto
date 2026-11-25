@@ -234,7 +234,6 @@ public class EventAttendanceController {
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    /*NUEVOS ENDPOINT PARA my_event.html */
     // Autenticación de miembro por correo o documento para endpoints de autoservicio
     private ResponseEntity<?> verifyMemberForAttendance(String identifier, String password) {
         String cleanIdentifier = identifier == null ? "" : identifier.trim();
@@ -378,7 +377,6 @@ public class EventAttendanceController {
         EventAttendance saved = eventAttendanceRepository.save(existing);
         return ResponseEntity.ok(saved);
     }
-    /*_________________________________________ */
 
     /*NUEVO ENDPOINT PARA CONSULTAR LA INFO DE MIEMBROS Y PREGARGARLA EN EL FORMULARIO DE INSCRIPCIÓN */
     @GetMapping("/member-profile")
